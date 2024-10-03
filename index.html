@@ -94,27 +94,30 @@
     function drawStartScreen() {
       context.clearRect(0, 0, canvas.width, canvas.height);  // Очистка экрана
        const screenCenterX = canvas.width / 2;  // Центр экрана по горизонтали
-       const screenHeight = canvas.height;  // Высота экрана
-       const spacing = screenHeight / 6;  // Интервал между строками
-
+      const screenHeight = canvas.height;  // Высота экрана
+      const spacing = screenHeight / 6;  // Интервал между строками
+      
+      // Функция для центрирования текста
+      function drawCenteredText(text, fontSize, color, yPosition) {
+        context.font = `${fontSize}px "Press Start 2P"`;  // Устанавливаем размер шрифта
+        context.fillStyle = color;  // Устанавливаем цвет текста
+        const textWidth = context.measureText(text).width;  // Измеряем ширину текста
+        context.fillText(text, screenCenterX - textWidth / 2, yPosition);  // Центрируем текст
+      }
+      
       // Основной текст
-       context.font = '25px "Press Start 2P"';  // Пиксельный шрифт для основного текста
-       context.fillStyle = '#fff';  // Белый цвет текста
-       context.fillText('Тут', screenCenterX - 50, spacing * 1);  // Текст вверху
-       context.fillText('Секрет', screenCenterX - 80, spacing * 2);  // Чуть ниже
-
-      // Слово "Кооооосмического" с фиолетовым цветом
-       context.fillStyle = '#800080';  // Фиолетовый цвет
-       context.fillText('Коосмического', screenCenterX - 240, spacing * 3);  // Посередине экрана
-
+      drawCenteredText('Тут', 25, '#fff', spacing * 1);  // Текст вверху
+      drawCenteredText('Секрет', 25, '#fff', spacing * 2);  // Чуть ниже
+      
+      // Слово "Коосмического" с фиолетовым цветом
+      drawCenteredText('Коосмического', 25, '#800080', spacing * 3);  // Фиолетовый цвет
+      
       // Текст "Масштаба"
-       context.fillStyle = '#fff';  // Белый цвет текста
-       context.fillText('Масштаба', screenCenterX - 100, spacing * 4);  // Чуть ниже
-
+      drawCenteredText('Масштаба', 25, '#fff', spacing * 4);  // Чуть ниже
+      
       // Текст "Нажми, чтобы узнать" с уменьшенным размером
-       context.font = '15px "Press Start 2P"';  // Уменьшенный шрифт
-       context.fillText('Нажми, чтобы узнать', screenCenterX - 100, spacing * 5);  // Текст внизу
-       context.fillText('v.25', screenCenterX - 100, spacing * 5);  // Текст внизу
+      drawCenteredText('Нажми, чтобы узнать', 15, '#fff', spacing * 5);  // Уменьшенный шрифт
+      drawCenteredText('v.25', 15, '#fff', spacing * 6);  // Версия внизу
     }
 
 
@@ -235,27 +238,30 @@ function drawCoinWithLetter() {
     function drawVictoryMessage() {
       context.clearRect(0, 0, canvas.width, canvas.height);  // Очистка экрана
 
-      // Текст "Ура, ты добрался!" - основной цвет
-      context.font = '20px "Press Start 2P"';  // Пиксельный шрифт
-      context.fillStyle = '#00FF00';  // Зеленый цвет
-      context.fillText('Ура, ты добрался!', canvas.width / 2 - 180, canvas.height / 2 - 100);  // Текст вверху
-
+      function drawCenteredText(text, fontSize, color, yPosition) {
+        context.font = `${fontSize}px "Press Start 2P"`;  // Устанавливаем размер шрифта
+        context.fillStyle = color;  // Устанавливаем цвет текста
+        const textWidth = context.measureText(text).width;  // Измеряем ширину текста
+        context.fillText(text, (canvas.width - textWidth) / 2, yPosition);  // Центрируем текст
+      }
+      
+      // Текст "Ура" и "Ты добрался!"
+      drawCenteredText('Ура', 20, '#00FF00', canvas.height / 2 - 100);  // Зеленый цвет, первая строка
+      drawCenteredText('Ты добрался!', 20, '#00FF00', canvas.height / 2 - 60);  // Зеленый цвет, вторая строка
+      
       // Текст "Вечерний покер" - белый цвет
-      context.fillStyle = '#fff';  // Белый цвет текста
-      context.fillText('Вечерний покер', canvas.width / 2 - 120, canvas.height / 2 - 60);  // Текст ниже
-
+      drawCenteredText('Вечерний покер', 20, '#fff', canvas.height / 2 - 20);  // Белый цвет, центральная часть
+      
       // Текст "Тема покера:" - красный цвет
-      context.fillStyle = '#FF0000';  // Красный цвет
-      context.fillText('Тема покера:', canvas.width / 2 - 100, canvas.height / 2 - 20);  // Чуть ниже
-
-      // Текст "АРСЕН В ЯНДЕКСЕ" - фиолетовый цвет
-      context.fillStyle = '#800080';  // Фиолетовый цвет
-      context.fillText('АРСЕН В ЯНДЕКСЕ', canvas.width / 2 - 140, canvas.height / 2 + 20);  // Ещё ниже
-
+      drawCenteredText('Тема покера:', 20, '#FF0000', canvas.height / 2 + 20);  // Красный цвет, чуть ниже
+      
+      // Текст "АРСЕН В ЯНДЕКСЕ" и поздравление - фиолетовый цвет
+      drawCenteredText('АРСЕН В ЯНДЕКСЕ', 20, '#800080', canvas.height / 2 + 60);  // Фиолетовый цвет
+      drawCenteredText('(Поздравляем!)', 15, '#800080', canvas.height / 2 + 100);  // Фиолетовый цвет, поздравление
+      
       // Текст "Ждем вас в воскресенье в 18:00" - оранжевый цвет
-      context.fillStyle = '#FFA500';  // Оранжевый цвет
-      context.fillText('Ждем вас в воскресенье', canvas.width / 2 - 200, canvas.height / 2 + 60);
-      context.fillText('в 18:00', canvas.width / 2 - 50, canvas.height / 2 + 100);  // Текст внизу
+      drawCenteredText('Ждем вас в воскресенье', 20, '#FFA500', canvas.height / 2 + 140);  // Оранжевый цвет
+      drawCenteredText('в 18:00', 20, '#FFA500', canvas.height / 2 + 180);  // Оранжевый цвет, следующая строка
     }
 
     function resetGame() {
