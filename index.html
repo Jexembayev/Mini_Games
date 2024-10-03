@@ -248,7 +248,7 @@ function drawCoinWithLetter() {
         const textWidth = context.measureText(text).width;  // Измеряем ширину текста
         context.fillText(text, (canvas.width - textWidth) / 2, yPosition);  // Центрируем текст
       }
-      context.drawImage(victoryImage, canvas.width / 2, canvas.height / 2 + 80, 200, 150);  // Позиция и размер изображения
+      context.drawImage(victoryImage, canvas.width / 2 - 100, 50, 200, 150);  // Изображение сверху по центру
       // Текст "Ура" и "Ты добрался!"
       drawCenteredText('Ура', 20, '#00FF00', canvas.height / 2 - 100);  // Зеленый цвет, первая строка
       drawCenteredText('Ты добрался!', 20, '#00FF00', canvas.height / 2 - 60);  // Зеленый цвет, вторая строка
