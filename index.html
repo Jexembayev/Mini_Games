@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mini Flappy Bird with Letters</title>
+  <title>Mini Flappy Bird with Letters and Victory</title>
   <style>
     body {
       margin: 0;
@@ -34,6 +34,7 @@
     let pipeY = Math.floor(Math.random() * (canvas.height - 200)) + 50;
     let score = 0;
     let isGameOver = false;
+    let isVictory = false; // Переменная для проверки победы
 
     // Массив для хранения букв
     let letters = [
@@ -70,9 +71,11 @@
     }
 
     function drawPipe() {
-      context.fillStyle = '#000';  // Черные трубы
-      context.fillRect(pipeX, 0, 20, pipeY);
-      context.fillRect(pipeX, pipeY + 100, 20, canvas.height);
+      if (!isVictory) { // Трубы не отображаются после победы
+        context.fillStyle = '#000';  // Черные трубы
+        context.fillRect(pipeX, 0, 20, pipeY);
+        context.fillRect(pipeX, pipeY + 100, 20, canvas.height);
+      }
     }
 
     function drawLetters() {
@@ -88,6 +91,20 @@
           score += 5;  // Дополнительные очки за сбор буквы
         }
       });
+
+      // Если все буквы собраны, игрок побеждает
+      if (letters.length === 0) {
+        isVictory = true;
+      }
+    }
+
+    function drawVictoryMessage() {
+      context.font = '30px Arial';
+      context.fillStyle = '#fff';
+      context.fillText('Вечерний покер', canvas.width / 2 - 100, canvas.height / 2 - 40);
+      context.fillText('Тема покера:', canvas.width / 2 - 100, canvas.height / 2);
+      context.fillText('АРСЕН В ЯНДЕКСЕ', canvas.width / 2 - 120, canvas.height / 2 + 40);
+      context.fillText('Ждем вас в воскресенье в 18:00', canvas.width / 2 - 200, canvas.height / 2 + 80);
     }
 
     function resetGame() {
@@ -97,6 +114,7 @@
       pipeY = Math.floor(Math.random() * (canvas.height - 200)) + 50;
       score = 0;
       isGameOver = false;
+      isVictory = false;
 
       // Сброс позиций букв
       letters.forEach(letter => {
@@ -106,7 +124,7 @@
     }
 
     function updateGame() {
-      if (!isGameOver) {
+      if (!isGameOver && !isVictory) {
         birdVelocity += gravity;
         birdY += birdVelocity;
 
@@ -130,6 +148,9 @@
         context.font = '20px Arial';
         context.fillStyle = '#fff';  // Белый цвет текста
         context.fillText(`Score: ${score}`, 10, 20);
+      } else if (isVictory) {
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        drawVictoryMessage();  // Отображение победного сообщения
       } else {
         context.font = '30px Arial';
         context.fillStyle = '#fff';  // Белый цвет текста при окончании игры
@@ -140,7 +161,7 @@
 
     // Обработка кликов для ПК
     canvas.addEventListener('click', function() {
-      if (isGameOver) {
+      if (isGameOver || isVictory) {
         resetGame();
       } else {
         birdVelocity = -7;  // Прыжок вверх
@@ -149,7 +170,7 @@
 
     // Обработка касаний для мобильных устройств
     canvas.addEventListener('touchstart', function() {
-      if (isGameOver) {
+      if (isGameOver || isVictory) {
         resetGame();
       } else {
         birdVelocity = -7;  // Прыжок вверх
