@@ -87,7 +87,7 @@
       if (!isVictory) { // Трубы не отображаются после победы
         context.fillStyle = '#000';  // Черные трубы
         context.fillRect(pipeX, 0, 40, pipeY);
-        context.fillRect(pipeX, pipeY + 100, 40, canvas.height);
+        context.fillRect(pipeX, pipeY + 150, 40, canvas.height);
       }
     }
     
@@ -297,7 +297,7 @@ function drawCoinWithLetter() {
         }
 
         // Проверка столкновения с трубами или землей
-        if (birdY < 0 || birdY > canvas.height || (pipeX < 70 && pipeX + 5 > 30 && (birdY < pipeY || birdY > pipeY + 100))) {
+        if (birdY < 0 || birdY > canvas.height || (pipeX < 70 && pipeX + 5 > 30 && (birdY < pipeY || birdY > pipeY + 150))) {
           isGameOver = true;
         }
 
