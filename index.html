@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mini Flappy Bird with Coins and Letters</title>
+  <title>Mini Flappy Bird with Letters and Victory</title>
   <style>
     body {
       margin: 0;
@@ -37,8 +37,6 @@
     let isVictory = false; // Переменная для проверки победы
     let collectedLetterEffect = false; // Флаг для эффекта при сборе буквы
     let effectTimer = 0; // Таймер для эффекта
-    let levitationOffset = 0; // Смещение для эффекта левитации
-    let levitationDirection = 1; // Направление движения (вверх или вниз)
 
     // Массив для хранения букв
     let letters = [
@@ -86,28 +84,19 @@
       }
     }
 
-    function drawCoinWithLetter() {
+    function drawLetter() {
       if (currentLetterIndex < letters.length) {
-        // Эффект левитации
-        if (levitationOffset > 5 || levitationOffset < -5) {
-          levitationDirection *= -1;
-        }
-        levitationOffset += levitationDirection * 0.2;
-
-        // Рисуем монетку
-        context.fillStyle = '#FFD700';  // Золотистый цвет для монеты
-        context.beginPath();
-        context.arc(letterX, letterY + levitationOffset, 25, 0, Math.PI * 2);  // Радиус монетки 25
-        context.fill();
-
-        // Рисуем букву внутри монетки
         context.font = '20px Arial';
-        context.fillStyle = '#000';  // Черный цвет для буквы
-        context.fillText(letters[currentLetterIndex].letter, letterX - 6, letterY + 7 + levitationOffset); // Буква в центре монеты
+        context.fillStyle = '#fff';  // Белый цвет для букв
+        if (collectedLetterEffect) {
+          // Эффект при сборе буквы (увеличение буквы)
+          context.font = '30px Arial';
+        }
+        context.fillText(letters[currentLetterIndex].letter, letterX, letterY);
 
-        letterX -= 2;  // Монета с буквой движется влево
+        letterX -= 2;  // Буква движется влево
 
-        // Проверка на столкновение птицы с монеткой
+        // Проверка на столкновение птицы с буквой
         if (letterX < 70 && letterX > 30 && birdY > letterY - 20 && birdY < letterY + 20) {
           letters[currentLetterIndex].collected = true;  // Отметка, что буква собрана
           score += 5;  // Дополнительные очки за сбор буквы
@@ -173,7 +162,7 @@
         context.clearRect(0, 0, canvas.width, canvas.height);
         drawBird();
         drawPipe();
-        drawCoinWithLetter();  // Отрисовка монеток с буквами
+        drawLetter();
 
         // Эффект при сборе буквы (таймер эффекта)
         if (collectedLetterEffect) {
@@ -215,3 +204,4 @@
   </script>
 </body>
 </html>
+
