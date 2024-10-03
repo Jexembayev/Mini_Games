@@ -43,23 +43,25 @@
     let effectTimer = 0;
     let particles = [];  // Массив для частиц-пикселей
     let canRestart = false;  // Флаг, который разрешает перезапуск игры
+    const victoryImage = new Image();
+    victoryImage.src = 'Arsen.jpg'; 
     
 
     // Массив для хранения букв
     let letters = [
       { letter: 'А', collected: false },
-      { letter: 'Р', collected: false },
-      { letter: 'С', collected: false },
-      { letter: 'Е', collected: false },
-      { letter: 'Н', collected: false },
-      { letter: 'В', collected: false },
-      { letter: 'Я', collected: false },
-      { letter: 'Н', collected: false },
-      { letter: 'Д', collected: false },
-      { letter: 'Е', collected: false },
-      { letter: 'К', collected: false },
-      { letter: 'С', collected: false },
-      { letter: 'Е', collected: false }
+      //{ letter: 'Р', collected: false },
+      //{ letter: 'С', collected: false },
+      //{ letter: 'Е', collected: false },
+      //{ letter: 'Н', collected: false },
+      //{ letter: 'В', collected: false },
+      //{ letter: 'Я', collected: false },
+      //{ letter: 'Н', collected: false },
+      //{ letter: 'Д', collected: false },
+      //{ letter: 'Е', collected: false },
+      //{ letter: 'К', collected: false },
+      //{ letter: 'С', collected: false },
+      //{ letter: 'Е', collected: false }
     ];
 
     let currentLetterIndex = 0;  // Индекс текущей буквы
@@ -118,7 +120,7 @@
       drawCenteredText('Нажми, чтобы узнать', 15, '#fff', baseYPosition + 60);  // Уменьшенный шрифт
       
       // Версия
-      drawCenteredText('v.29', 15, '#fff', baseYPosition + 100);  // Версия внизу
+      drawCenteredText('v.31.1', 15, '#fff', baseYPosition + 100);  // Версия внизу
     }
 
 
@@ -245,7 +247,7 @@ function drawCoinWithLetter() {
         const textWidth = context.measureText(text).width;  // Измеряем ширину текста
         context.fillText(text, (canvas.width - textWidth) / 2, yPosition);  // Центрируем текст
       }
-      
+      context.drawImage(victoryImage, canvas.width / 2, canvas.height / 2 + 80, 200, 150);  // Позиция и размер изображения
       // Текст "Ура" и "Ты добрался!"
       drawCenteredText('Ура', 20, '#00FF00', canvas.height / 2 - 100);  // Зеленый цвет, первая строка
       drawCenteredText('Ты добрался!', 20, '#00FF00', canvas.height / 2 - 60);  // Зеленый цвет, вторая строка
@@ -263,7 +265,7 @@ function drawCoinWithLetter() {
       // Текст "Ждем вас в воскресенье в 18:00" - оранжевый цвет
       drawCenteredText('Ждем вас', 20, '#FFA500', canvas.height / 2 + 140);  // Оранжевый цвет
       drawCenteredText('В воскресенье', 20, '#FFA500', canvas.height / 2 + 180);  // Оранжевый цвет
-      drawCenteredText('в 18:00', 20, '#FFA500', canvas.height / 2 + 2200);  // Оранжевый цвет, следующая строка
+      drawCenteredText('в 18:00', 20, '#FFA500', canvas.height / 2 + 200);  // Оранжевый цвет, следующая строка
     }
 
     function resetGame() {
