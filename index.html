@@ -68,8 +68,8 @@
 
     // Функция для настройки канваса под экран устройства
     function resizeCanvas() {
-      canvas.width = window.innerWidth * 0.95;  // 90% ширины экрана
-      canvas.height = window.innerHeight * 0.95;  // 90% высоты экрана
+      canvas.width = window.innerWidth * 0.9;  // 90% ширины экрана
+      canvas.height = window.innerHeight * 0.8;  // 90% высоты экрана
       resetGame();  // Сброс настроек игры
     }
 
@@ -98,7 +98,7 @@
        const spacing = screenHeight / 6;  // Интервал между строками
 
       // Основной текст
-       context.font = '20px "Press Start 2P"';  // Пиксельный шрифт для основного текста
+       context.font = '25px "Press Start 2P"';  // Пиксельный шрифт для основного текста
        context.fillStyle = '#fff';  // Белый цвет текста
        context.fillText('Тут', screenCenterX - 50, spacing * 1);  // Текст вверху
        context.fillText('Секрет', screenCenterX - 80, spacing * 2);  // Чуть ниже
@@ -281,14 +281,14 @@ function drawCoinWithLetter() {
         birdY += birdVelocity;
 
         pipeX -= 2;  // Движение труб
-        if (pipeX < -35) {
+        if (pipeX < -25) {
           pipeX = canvas.width;
           pipeY = Math.floor(Math.random() * (canvas.height - 200)) + 50;
           score++;
         }
 
         // Проверка столкновения с трубами или землей
-        if (birdY < 0 || birdY > canvas.height || (pipeX < 70 && pipeX + 35 > 30 && (birdY < pipeY || birdY > pipeY + 100))) {
+        if (birdY < 0 || birdY > canvas.height || (pipeX < 70 && pipeX + 5 > 30 && (birdY < pipeY || birdY > pipeY + 100))) {
           isGameOver = true;
         }
 
