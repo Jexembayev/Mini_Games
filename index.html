@@ -38,20 +38,24 @@
 
     // Массив для хранения букв
     let letters = [
-      { letter: 'А', x: canvas.width, y: Math.random() * canvas.height },
-      { letter: 'Р', x: canvas.width, y: Math.random() * canvas.height },
-      { letter: 'С', x: canvas.width, y: Math.random() * canvas.height },
-      { letter: 'Е', x: canvas.width, y: Math.random() * canvas.height },
-      { letter: 'Н', x: canvas.width, y: Math.random() * canvas.height },
-      { letter: 'В', x: canvas.width, y: Math.random() * canvas.height },
-      { letter: 'Я', x: canvas.width, y: Math.random() * canvas.height },
-      { letter: 'Н', x: canvas.width, y: Math.random() * canvas.height },
-      { letter: 'Д', x: canvas.width, y: Math.random() * canvas.height },
-      { letter: 'Е', x: canvas.width, y: Math.random() * canvas.height },
-      { letter: 'К', x: canvas.width, y: Math.random() * canvas.height },
-      { letter: 'С', x: canvas.width, y: Math.random() * canvas.height },
-      { letter: 'Е', x: canvas.width, y: Math.random() * canvas.height }
+      { letter: 'А', collected: false },
+      { letter: 'Р', collected: false },
+      { letter: 'С', collected: false },
+      { letter: 'Е', collected: false },
+      { letter: 'Н', collected: false },
+      { letter: 'В', collected: false },
+      { letter: 'Я', collected: false },
+      { letter: 'Н', collected: false },
+      { letter: 'Д', collected: false },
+      { letter: 'Е', collected: false },
+      { letter: 'К', collected: false },
+      { letter: 'С', collected: false },
+      { letter: 'Е', collected: false }
     ];
+
+    let currentLetterIndex = 0;  // Индекс текущей буквы
+    let letterX = canvas.width;  // Позиция X для буквы
+    let letterY = Math.floor(Math.random() * (canvas.height - 100)) + 50;  // Случайная позиция Y для буквы
 
     // Функция для настройки канваса под экран устройства
     function resizeCanvas() {
@@ -78,22 +82,28 @@
       }
     }
 
-    function drawLetters() {
-      context.font = '20px Arial';
-      context.fillStyle = '#fff';  // Белый цвет для букв
-      letters.forEach(letter => {
-        context.fillText(letter.letter, letter.x, letter.y);
-        letter.x -= 2;  // Буквы движутся влево
+    function drawLetter() {
+      if (currentLetterIndex < letters.length) {
+        context.font = '20px Arial';
+        context.fillStyle = '#fff';  // Белый цвет для букв
+        context.fillText(letters[currentLetterIndex].letter, letterX, letterY);
 
-        // Проверка на столкновение птицы с буквами
-        if (letter.x < 70 && letter.x > 30 && birdY > letter.y - 20 && birdY < letter.y + 20) {
-          letters = letters.filter(l => l !== letter);  // Убираем собранную букву
+        letterX -= 2;  // Буква движется влево
+
+        // Проверка на столкновение птицы с буквой
+        if (letterX < 70 && letterX > 30 && birdY > letterY - 20 && birdY < letterY + 20) {
+          letters[currentLetterIndex].collected = true;  // Отметка, что буква собрана
           score += 5;  // Дополнительные очки за сбор буквы
+          currentLetterIndex++;  // Переход к следующей букве
+
+          // Устанавливаем новую позицию для следующей буквы
+          letterX = pipeX + 200;  // Появляется через 200px после трубы
+          letterY = Math.floor(Math.random() * (canvas.height - 100)) + 50;  // Случайная позиция Y
         }
-      });
+      }
 
       // Если все буквы собраны, игрок побеждает
-      if (letters.length === 0) {
+      if (currentLetterIndex === letters.length) {
         isVictory = true;
       }
     }
@@ -115,12 +125,9 @@
       score = 0;
       isGameOver = false;
       isVictory = false;
-
-      // Сброс позиций букв
-      letters.forEach(letter => {
-        letter.x = canvas.width;
-        letter.y = Math.random() * canvas.height;
-      });
+      currentLetterIndex = 0;  // Сброс на первую букву
+      letterX = pipeX + 200;  // Начальная позиция буквы за трубой
+      letterY = Math.floor(Math.random() * (canvas.height - 100)) + 50;  // Случайная позиция Y
     }
 
     function updateGame() {
@@ -144,7 +151,7 @@
         context.clearRect(0, 0, canvas.width, canvas.height);
         drawBird();
         drawPipe();
-        drawLetters();
+        drawLetter();
         context.font = '20px Arial';
         context.fillStyle = '#fff';  // Белый цвет текста
         context.fillText(`Score: ${score}`, 10, 20);
@@ -181,6 +188,3 @@
   </script>
 </body>
 </html>
-
-
-
