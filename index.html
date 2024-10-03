@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Mini Flappy Bird</title>
+  <style>
+    body { text-align: center; font-family: Arial, sans-serif; }
+    canvas { background: #70c5ce; display: block; margin: 0 auto; }
+  </style>
+</head>
+<body>
+  <h1>Mini Flappy Bird</h1>
+  <canvas id="gameCanvas" width="320" height="480"></canvas>
+  <script>
+    const canvas = document.getElementById('gameCanvas');
+    const context = canvas.getContext('2d');
+
+    let birdY = canvas.height / 2;
+    let birdVelocity = 0;
+    let gravity = 0.5;
+    let pipeX = canvas.width;
+    let pipeY = Math.floor(Math.random() * (canvas.height - 200)) + 50;
+    let score = 0;
+    let isGameOver = false;
+
+    function drawBird() {
+      context.fillStyle = 'yellow';
+      context.beginPath();
+      context.arc(50, birdY, 15, 0, Math.PI * 2);
+      context.fill();
+    }
+
+    function drawPipe() {
+      context.fillStyle = 'green';
+      context.fillRect(pipeX, 0, 20, pipeY);
+      context.fillRect(pipeX, pipeY + 100, 20, canvas.height);
+    }
+
+    function resetGame() {
+      birdY = canvas.height / 2;
+      birdVelocity = 0;
+      pipeX = canvas.width;
+      pipeY = Math.floor(Math.random() * (canvas.height - 200)) + 50;
+      score = 0;
+      isGameOver = false;
+    }
+
+    function updateGame() {
+      if (!isGameOver) {
+        birdVelocity += gravity;
+        birdY += birdVelocity;
+
+        pipeX -= 2;
+        if (pipeX < -20) {
+          pipeX = canvas.width;
+          pipeY = Math.floor(Math.random() * (canvas.height - 200)) + 50;
+          score++;
+        }
+
+        if (birdY < 0 || birdY > canvas.height || (pipeX < 70 && pipeX > 30 && (birdY < pipeY || birdY > pipeY + 100))) {
+          isGameOver = true;
+        }
+
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        drawBird();
+        drawPipe();
+        context.font = '20px Arial';
+        context.fillText(`Score: ${score}`, 10, 20);
+      } else {
+        context.font = '30px Arial';
+        context.fillText('Game Over', 100, canvas.height / 2);
+        context.fillText('Click to Restart', 70, canvas.height / 2 + 40);
+      }
+    }
+
+    canvas.addEventListener('click', function() {
+      if (isGameOver) {
+        resetGame();
+      } else {
+        birdVelocity = -7;
+      }
+    });
+
+    setInterval(updateGame, 1000 / 60);
+  </script>
+</body>
+</html>
