@@ -260,8 +260,9 @@ function drawCoinWithLetter() {
       drawCenteredText('(Поздравляем!)', 15, '#800080', canvas.height / 2 + 100);  // Фиолетовый цвет, поздравление
       
       // Текст "Ждем вас в воскресенье в 18:00" - оранжевый цвет
-      drawCenteredText('Ждем вас в воскресенье', 20, '#FFA500', canvas.height / 2 + 140);  // Оранжевый цвет
-      drawCenteredText('в 18:00', 20, '#FFA500', canvas.height / 2 + 180);  // Оранжевый цвет, следующая строка
+      drawCenteredText('Ждем вас', 20, '#FFA500', canvas.height / 2 + 140);  // Оранжевый цвет
+      drawCenteredText('В воскресенье', 20, '#FFA500', canvas.height / 2 + 180);  // Оранжевый цвет
+      drawCenteredText('в 18:00', 20, '#FFA500', canvas.height / 2 + 2200);  // Оранжевый цвет, следующая строка
     }
 
     function resetGame() {
@@ -288,7 +289,7 @@ function drawCoinWithLetter() {
         birdY += birdVelocity;
 
         pipeX -= 2;  // Движение труб
-        if (pipeX < -25) {
+        if (pipeX < -40) {
           pipeX = canvas.width;
           pipeY = Math.floor(Math.random() * (canvas.height - 200)) + 50;
           score++;
