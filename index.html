@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mini Flappy Bird</title>
+  <title>Mini Flappy Bird with Letters</title>
   <style>
     body {
       margin: 0;
@@ -15,7 +15,7 @@
       background-color: #000;  /* Черный фон */
     }
     canvas {
-      background: #f00; /* Красный фон для канваса */
+      background: #ff6666; /* Более мягкий красный фон для канваса */
       display: block;
     }
   </style>
@@ -34,6 +34,23 @@
     let pipeY = Math.floor(Math.random() * (canvas.height - 200)) + 50;
     let score = 0;
     let isGameOver = false;
+
+    // Массив для хранения букв
+    let letters = [
+      { letter: 'А', x: canvas.width, y: Math.random() * canvas.height },
+      { letter: 'Р', x: canvas.width, y: Math.random() * canvas.height },
+      { letter: 'С', x: canvas.width, y: Math.random() * canvas.height },
+      { letter: 'Е', x: canvas.width, y: Math.random() * canvas.height },
+      { letter: 'Н', x: canvas.width, y: Math.random() * canvas.height },
+      { letter: 'В', x: canvas.width, y: Math.random() * canvas.height },
+      { letter: 'Я', x: canvas.width, y: Math.random() * canvas.height },
+      { letter: 'Н', x: canvas.width, y: Math.random() * canvas.height },
+      { letter: 'Д', x: canvas.width, y: Math.random() * canvas.height },
+      { letter: 'Е', x: canvas.width, y: Math.random() * canvas.height },
+      { letter: 'К', x: canvas.width, y: Math.random() * canvas.height },
+      { letter: 'С', x: canvas.width, y: Math.random() * canvas.height },
+      { letter: 'Е', x: canvas.width, y: Math.random() * canvas.height }
+    ];
 
     // Функция для настройки канваса под экран устройства
     function resizeCanvas() {
@@ -58,6 +75,21 @@
       context.fillRect(pipeX, pipeY + 100, 20, canvas.height);
     }
 
+    function drawLetters() {
+      context.font = '20px Arial';
+      context.fillStyle = '#fff';  // Белый цвет для букв
+      letters.forEach(letter => {
+        context.fillText(letter.letter, letter.x, letter.y);
+        letter.x -= 2;  // Буквы движутся влево
+
+        // Проверка на столкновение птицы с буквами
+        if (letter.x < 70 && letter.x > 30 && birdY > letter.y - 20 && birdY < letter.y + 20) {
+          letters = letters.filter(l => l !== letter);  // Убираем собранную букву
+          score += 5;  // Дополнительные очки за сбор буквы
+        }
+      });
+    }
+
     function resetGame() {
       birdY = canvas.height / 2;
       birdVelocity = 0;
@@ -65,6 +97,12 @@
       pipeY = Math.floor(Math.random() * (canvas.height - 200)) + 50;
       score = 0;
       isGameOver = false;
+
+      // Сброс позиций букв
+      letters.forEach(letter => {
+        letter.x = canvas.width;
+        letter.y = Math.random() * canvas.height;
+      });
     }
 
     function updateGame() {
@@ -88,6 +126,7 @@
         context.clearRect(0, 0, canvas.width, canvas.height);
         drawBird();
         drawPipe();
+        drawLetters();
         context.font = '20px Arial';
         context.fillStyle = '#fff';  // Белый цвет текста
         context.fillText(`Score: ${score}`, 10, 20);
@@ -121,5 +160,6 @@
   </script>
 </body>
 </html>
+
 
 
