@@ -120,7 +120,7 @@
       drawCenteredText('Нажми, чтобы узнать', 15, '#fff', baseYPosition + 60);  // Уменьшенный шрифт
       
       // Версия
-      drawCenteredText('v.31.2', 15, '#fff', baseYPosition + 100);  // Версия внизу
+      drawCenteredText('v.31.3', 15, '#fff', baseYPosition + 100);  // Версия внизу
     }
 
 
@@ -239,7 +239,7 @@ function drawCoinWithLetter() {
   }
 }
     function drawVictoryMessage() {
-      victoryImage.onload = function() {
+      //victoryImage.onload = function() {
       context.clearRect(0, 0, canvas.width, canvas.height);  // Очистка экрана
 
       function drawCenteredText(text, fontSize, color, yPosition) {
