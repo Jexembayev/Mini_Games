@@ -35,6 +35,8 @@
     let score = 0;
     let isGameOver = false;
     let isVictory = false; // Переменная для проверки победы
+    let collectedLetterEffect = false; // Флаг для эффекта при сборе буквы
+    let effectTimer = 0; // Таймер для эффекта
 
     // Массив для хранения букв
     let letters = [
@@ -77,8 +79,8 @@
     function drawPipe() {
       if (!isVictory) { // Трубы не отображаются после победы
         context.fillStyle = '#000';  // Черные трубы
-        context.fillRect(pipeX, 0, 40, pipeY);
-        context.fillRect(pipeX, pipeY + 80, 40, canvas.height);
+        context.fillRect(pipeX, 0, 20, pipeY);
+        context.fillRect(pipeX, pipeY + 100, 20, canvas.height);
       }
     }
 
@@ -86,6 +88,10 @@
       if (currentLetterIndex < letters.length) {
         context.font = '20px Arial';
         context.fillStyle = '#fff';  // Белый цвет для букв
+        if (collectedLetterEffect) {
+          // Эффект при сборе буквы (увеличение буквы)
+          context.font = '30px Arial';
+        }
         context.fillText(letters[currentLetterIndex].letter, letterX, letterY);
 
         letterX -= 2;  // Буква движется влево
@@ -99,6 +105,10 @@
           // Устанавливаем новую позицию для следующей буквы
           letterX = pipeX + 200;  // Появляется через 200px после трубы
           letterY = Math.floor(Math.random() * (canvas.height - 100)) + 50;  // Случайная позиция Y
+
+          // Запускаем эффект при сборе буквы
+          collectedLetterEffect = true;
+          effectTimer = 30; // Таймер для эффекта
         }
       }
 
@@ -128,6 +138,7 @@
       currentLetterIndex = 0;  // Сброс на первую букву
       letterX = pipeX + 200;  // Начальная позиция буквы за трубой
       letterY = Math.floor(Math.random() * (canvas.height - 100)) + 50;  // Случайная позиция Y
+      collectedLetterEffect = false;  // Отключаем эффект при сбросе
     }
 
     function updateGame() {
@@ -152,6 +163,15 @@
         drawBird();
         drawPipe();
         drawLetter();
+
+        // Эффект при сборе буквы (таймер эффекта)
+        if (collectedLetterEffect) {
+          effectTimer--;
+          if (effectTimer <= 0) {
+            collectedLetterEffect = false; // Эффект завершается
+          }
+        }
+
         context.font = '20px Arial';
         context.fillStyle = '#fff';  // Белый цвет текста
         context.fillText(`Score: ${score}`, 10, 20);
@@ -168,19 +188,15 @@
 
     // Обработка кликов для ПК
     canvas.addEventListener('click', function() {
-      if (isGameOver || isVictory) {
+      if (isGameOver) {
         resetGame();
-      } else {
-        birdVelocity = -7;  // Прыжок вверх
       }
     });
 
     // Обработка касаний для мобильных устройств
     canvas.addEventListener('touchstart', function() {
-      if (isGameOver || isVictory) {
+      if (isGameOver) {
         resetGame();
-      } else {
-        birdVelocity = -7;  // Прыжок вверх
       }
     });
 
@@ -188,3 +204,4 @@
   </script>
 </body>
 </html>
+
