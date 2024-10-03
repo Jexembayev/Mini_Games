@@ -93,9 +93,8 @@
     
     function drawStartScreen() {
       context.clearRect(0, 0, canvas.width, canvas.height);  // Очистка экрана
-       const screenCenterX = canvas.width / 2;  // Центр экрана по горизонтали
-      const screenHeight = canvas.height;  // Высота экрана
-      const spacing = screenHeight / 6;  // Интервал между строками
+      const screenCenterX = canvas.width / 2;  // Центр экрана по горизонтали
+      const baseYPosition = canvas.height / 2 - 60;  // Базовое положение по Y
       
       // Функция для центрирования текста
       function drawCenteredText(text, fontSize, color, yPosition) {
@@ -106,18 +105,20 @@
       }
       
       // Основной текст
-      drawCenteredText('Тут', 25, '#fff', spacing * 1);  // Текст вверху
-      drawCenteredText('Секрет', 25, '#fff', spacing * 2);  // Чуть ниже
+      drawCenteredText('Тут', 25, '#fff', baseYPosition - 100);  // Текст вверху
+      drawCenteredText('Секрет', 25, '#fff', baseYPosition - 60);  // Чуть ниже
       
       // Слово "Коосмического" с фиолетовым цветом
-      drawCenteredText('Коосмического', 25, '#800080', spacing * 3);  // Фиолетовый цвет
+      drawCenteredText('Коосмического', 25, '#800080', baseYPosition - 20);  // Фиолетовый цвет
       
       // Текст "Масштаба"
-      drawCenteredText('Масштаба', 25, '#fff', spacing * 4);  // Чуть ниже
+      drawCenteredText('Масштаба', 25, '#fff', baseYPosition + 20);  // Чуть ниже
       
       // Текст "Нажми, чтобы узнать" с уменьшенным размером
-      drawCenteredText('Нажми, чтобы узнать', 15, '#fff', spacing * 5);  // Уменьшенный шрифт
-      drawCenteredText('v.27', 15, '#fff', spacing * 6);  // Версия внизу
+      drawCenteredText('Нажми, чтобы узнать', 15, '#fff', baseYPosition + 60);  // Уменьшенный шрифт
+      
+      // Версия
+      drawCenteredText('v.28', 15, '#fff', baseYPosition + 100);  // Версия внизу
     }
 
 
