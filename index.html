@@ -15,7 +15,7 @@
       background-color: #000;  /* Черный фон */
     }
     canvas {
-      background: #ff6666; /* Красный фон для канваса */
+      background: #ff6666; /* Более мягкий красный фон для канваса */
       display: block;
     }
   </style>
@@ -30,14 +30,20 @@
 
     let birdY = canvas.height / 2;
     let birdVelocity = 0;
-    let gravity = 0.5;
+    let gravity = 0.15;
     let pipeX = canvas.width;
     let pipeY = Math.floor(Math.random() * (canvas.height - 200)) + 50;
     let score = 0;
     let isGameOver = false;
     let isVictory = false; // Переменная для проверки победы
+    let levitationOffset = 0;  // Смещение для эффекта левитации
+    let levitationDirection = 1;  // Направление движения (вверх или вниз)
     let isGameStarted = false;  // Игра еще не начата
+    let collectedLetterEffect = false;
+    let effectTimer = 0;
+    let particles = [];  // Массив для частиц-пикселей
     let canRestart = false;  // Флаг, который разрешает перезапуск игры
+    
 
     // Массив для хранения букв
     let letters = [
@@ -110,23 +116,16 @@
        context.fillText('Нажми, чтобы узнать', screenCenterX - 110, spacing * 5);  // Текст внизу
     }
 
-    function drawCoinWithLetter() {
+
+    function drawLetter() {
       if (currentLetterIndex < letters.length) {
-        let size = 25;  // Размер монетки
-        // Рисуем монетку
-        context.fillStyle = '#FFD700';  // Золотистый цвет для монеты
-        context.beginPath();
-        context.arc(letterX, letterY, size, 0, Math.PI * 2);  // Радиус монетки 25
-        context.fill();
-
-        // Рисуем букву внутри монетки
         context.font = '20px "Press Start 2P';
-        context.fillStyle = '#000';  // Черный цвет для буквы
-        context.fillText(letters[currentLetterIndex].letter, letterX - 6, letterY + 7); // Буква в центре монеты
+        context.fillStyle = '#fff';  // Белый цвет для букв
+        context.fillText(letters[currentLetterIndex].letter, letterX, letterY);
 
-        letterX -= 2;  // Монета с буквой движется влево
+        letterX -= 2;  // Буква движется влево
 
-        // Проверка на столкновение птицы с монеткой
+        // Проверка на столкновение птицы с буквой
         if (letterX < 70 && letterX > 30 && birdY > letterY - 20 && birdY < letterY + 20) {
           letters[currentLetterIndex].collected = true;  // Отметка, что буква собрана
           score += 5;  // Дополнительные очки за сбор буквы
@@ -136,17 +135,126 @@
           letterX = pipeX + 200;  // Появляется через 200px после трубы
           letterY = Math.floor(Math.random() * (canvas.height - 100)) + 50;  // Случайная позиция Y
         }
-        // Если буква вышла за экран и не была собрана, возвращаем её
-        if (letterX < -20) {
-          letterX = canvas.width + 100;  // Снова появляется справа
-          letterY = Math.floor(Math.random() * (canvas.height - 100)) + 50;  // Новая случайная позиция Y
-        }
       }
 
       // Если все буквы собраны, игрок побеждает
       if (currentLetterIndex === letters.length) {
         isVictory = true;
       }
+    }
+    
+function showGameOverScreen() {
+  isGameOver = true;
+  canRestart = false;  // Блокируем перезапуск игры сразу
+  
+  // Через 1 секунду (примерно 60 кадров) разрешаем перезапуск
+  setTimeout(() => {
+    canRestart = true;
+  }, 1000);  // 1000 миллисекунд = 1 секунда
+}
+
+function createParticles(x, y) {
+  for (let i = 0; i < 40; i++) {  // Создаем 20 пикселей
+    particles.push({
+      x: x,
+      y: y,
+      size: Math.random() * 8 + 2,  // Размер пикселя от 2 до 6
+      speedX: (Math.random() - 0.5) * 8,  // Скорость по X (влево-вправо)
+      speedY: (Math.random() - 0.5) * 8,  // Скорость по Y (вверх-вниз)
+      color: '#FFD700'  // Золотистый цвет пикселя
+    });
+  }
+}
+function updateParticles() {
+  for (let i = 0; i < particles.length; i++) {
+    let p = particles[i];
+    p.x += p.speedX;  // Движение по оси X
+    p.y += p.speedY;  // Движение по оси Y
+    p.size *= 0.95;  // Пиксели уменьшаются со временем
+
+    // Рисуем пиксель
+    context.fillStyle = p.color;
+    context.fillRect(p.x, p.y, p.size, p.size);  // Рисуем квадратный пиксель
+
+    // Удаляем частицы, если они стали слишком маленькими
+    if (p.size < 0.5) {
+      particles.splice(i, 1);  // Удаляем пиксель из массива
+      i--;
+    }
+  }
+}
+
+function drawCoinWithLetter() {
+  if (currentLetterIndex < letters.length) {
+    // Эффект левитации
+    if (levitationOffset > 5 || levitationOffset < -5) {
+      levitationDirection *= -1;
+    }
+    levitationOffset += levitationDirection * 0.2;
+    let size = 25;  // Размер монетки
+    if (collectedLetterEffect) {
+      size = 35;  // Увеличиваем размер для эффекта
+    }
+    // Рисуем монетку
+    context.fillStyle = '#FFD700';  // Золотистый цвет для монеты
+    context.beginPath();
+    context.arc(letterX, letterY + levitationOffset, 25, 0, Math.PI * 2);  // Радиус монетки 25
+    context.fill();
+
+    // Рисуем букву внутри монетки
+    context.font = '20px "Press Start 2P';
+    context.fillStyle = '#000';  // Черный цвет для буквы
+    context.fillText(letters[currentLetterIndex].letter, letterX - 6, letterY + 7 + levitationOffset); // Буква в центре монеты
+
+    letterX -= 2;  // Монета с буквой движется влево
+
+    // Проверка на столкновение птицы с монеткой
+    if (letterX < 70 && letterX > 30 && birdY > letterY - 20 && birdY < letterY + 20) {
+      letters[currentLetterIndex].collected = true;  // Отметка, что буква собрана
+      score += 5;  // Дополнительные очки за сбор буквы
+      createParticles(letterX, letterY);  
+      currentLetterIndex++;  // Переход к следующей букве
+
+      // Устанавливаем новую позицию для следующей буквы
+      letterX = pipeX + 200;  // Появляется через 200px после трубы
+      letterY = Math.floor(Math.random() * (canvas.height - 100)) + 50;  // Случайная позиция Y
+    }
+      // Если буква вышла за экран и не была собрана, возвращаем её
+    if (letterX < -20) {
+      letterX = canvas.width + 100;  // Снова появляется справа
+      letterY = Math.floor(Math.random() * (canvas.height - 100)) + 50;  // Новая случайная позиция Y
+    }
+  }
+
+  // Если все буквы собраны, игрок побеждает
+  if (currentLetterIndex === letters.length) {
+    isVictory = true;
+  }
+}
+    function drawVictoryMessage() {
+      context.clearRect(0, 0, canvas.width, canvas.height);  // Очистка экрана
+
+      // Текст "Ура, ты добрался!" - основной цвет
+      context.font = '20px "Press Start 2P"';  // Пиксельный шрифт
+      context.fillStyle = '#00FF00';  // Зеленый цвет
+      context.fillText('Ура, ты добрался!', canvas.width / 2 - 180, canvas.height / 2 - 100);  // Текст вверху
+
+      // Текст "Вечерний покер" - белый цвет
+      context.fillStyle = '#fff';  // Белый цвет текста
+      context.fillText('Вечерний покер', canvas.width / 2 - 120, canvas.height / 2 - 60);  // Текст ниже
+
+      // Текст "Тема покера:" - красный цвет
+      context.fillStyle = '#FF0000';  // Красный цвет
+      context.fillText('Тема покера:', canvas.width / 2 - 100, canvas.height / 2 - 20);  // Чуть ниже
+
+      // Текст "АРСЕН В ЯНДЕКСЕ" - фиолетовый цвет
+      context.fillStyle = '#800080';  // Фиолетовый цвет
+      context.fillText('АРСЕН В ЯНДЕКСЕ', canvas.width / 2 - 140, canvas.height / 2 + 20);  // Ещё ниже
+
+      // Текст "Ждем вас в воскресенье в 18:00" - оранжевый цвет
+      context.fillStyle = '#FFA500';  // Оранжевый цвет
+      context.fillText('Ждем вас в воскресенье', canvas.width / 2 - 200, canvas.height / 2 + 60);
+      context.fillText('в 18:00', canvas.width / 2 - 50, canvas.height / 2 + 100);  // Текст внизу
     }
 
     function resetGame() {
@@ -162,7 +270,6 @@
       letterX = pipeX + 200;  // Начальная позиция буквы за трубой
       letterY = Math.floor(Math.random() * (canvas.height - 100)) + 50;  // Случайная позиция Y
     }
-
     function updateGame() {
       if (!isGameStarted) {
         drawStartScreen();
@@ -190,6 +297,7 @@
         drawBird();
         drawPipe();
         drawCoinWithLetter();  // Отрисовка монеток с буквами
+        updateParticles();
         context.font = '20px "Press Start 2P';
         context.fillStyle = '#fff';  // Белый цвет текста
         context.fillText(`Score: ${score}`, 10, 20);
@@ -236,9 +344,9 @@
         return;
       }
   
-      // Если игра идёт, добавляем действие для кликов (например, прыжок птицы)
-      birdVelocity = -7;  // Прыжок вверх
-    });
+  // Если игра идёт, добавляем действие для кликов (например, прыжок птицы)
+  birdVelocity = -4;  // Прыжок вверх
+});
 
     // Обработка касаний для мобильных устройств
     canvas.addEventListener('touchstart', function() {
@@ -251,21 +359,22 @@
         return;  // Блокируем клик на экране победы
       }
 
-      if (isGameOver) {
+       if (isGameOver) {
         if (canRestart) {
           resetGame();  // Перезапускаем игру
         }
         return;
       }
+  
+  // Если игра идёт, добавляем действие для кликов (например, прыжок птицы)
+  birdVelocity = -4;  // Прыжок вверх
+});
 
-      // Если игра идёт, добавляем действие для касаний (например, прыжок птицы)
-      birdVelocity = -7;  // Прыжок вверх
-    });
-
-    setInterval(updateGame, 1000 / 60);  // Обновление игры с частотой 60 FPS
+    function gameLoop() {
+  updateGame();  // Обновление игры
+  requestAnimationFrame(gameLoop);  // Следующий кадр
+}
+requestAnimationFrame(gameLoop);  // Запуск игрового цикла
   </script>
 </body>
 </html>
-
-
-
